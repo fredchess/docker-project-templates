@@ -18,10 +18,10 @@ RUN mkdir -p /var/www/public
 # Cela inclut les assets buildés (/var/www/public/build)
 COPY --from=assets /var/www/public /var/www/public
 
-# Optimisation: supprimer les fichiers PHP du dossier public de Nginx
-# (ils seront servis par php-fpm, pas Nginx)
-RUN find /var/www/public -type f -name "*.php" -delete \
-    && chown -R nginx:nginx /var/www/public
+# Ajuster les permissions
+# Note: On garde les fichiers PHP car Nginx doit pouvoir les lire
+# pour les passer à php-fpm (ils ne sont pas exécutés par Nginx)
+RUN chown -R nginx:nginx /var/www/public
 
 # Pas d'exposition de port (géré par Traefik dans Dokploy)
 CMD ["nginx", "-g", "daemon off;"]
