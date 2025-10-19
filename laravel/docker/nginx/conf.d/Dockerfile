@@ -3,7 +3,9 @@
 # =========================
 # Cette image copie les assets depuis l'image Laravel déjà buildée
 # pour éviter le problème de persistence des volumes Docker
-FROM ghcr.io/${GITHUB_REPOSITORY:-digipasscmr/digipass-crm}:latest AS assets
+ARG GITHUB_REPOSITORY=digipasscmr/digipass-crm
+ARG IMAGE_TAG=latest
+FROM ghcr.io/${GITHUB_REPOSITORY}:${IMAGE_TAG} AS assets
 
 # Image finale Nginx ultra-légère
 FROM nginx:stable-alpine
