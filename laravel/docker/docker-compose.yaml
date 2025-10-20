@@ -1,6 +1,7 @@
 services:
   php-fpm:
-    image: ghcr.io/${GITHUB_REPOSITORY:-digipasscmr/digipass-crm}:latest
+    image: ghcr.io/fredchess/hidima-backend:latest
+    pull_policy: always
     restart: unless-stopped
     volumes:
       - storage-data:/var/www/storage/app
@@ -8,31 +9,34 @@ services:
     env_file:
       - .env
     networks:
-      - digipass
+      - hidima
     healthcheck:
-      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      test: ["CMD-SHELL", "pidof php-fpm || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
 
   nginx:
-    image: ghcr.io/${GITHUB_REPOSITORY:-digipasscmr/digipass-crm}-nginx:latest
     build:
       context: ..
       dockerfile: docker/nginx/Dockerfile
       args:
-        GITHUB_REPOSITORY: ${GITHUB_REPOSITORY:-digipasscmr/digipass-crm}
+        GITHUB_REPOSITORY: fredchess/hidima-backend
+        IMAGE_TAG: ${IMAGE_TAG:-latest}
+      pull: true
     restart: unless-stopped
     depends_on:
       - php-fpm
+    volumes_from:
+      - php-fpm:ro
     networks:
-      - digipass
+      - hidima
 
   redis:
     image: redis:alpine
     restart: unless-stopped
     networks:
-      - digipass
+      - hidima
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -44,6 +48,6 @@ volumes:
   storage-logs:
 
 networks:
-  digipass:
+  hidima:
     name: dokploy-network
     external: true
