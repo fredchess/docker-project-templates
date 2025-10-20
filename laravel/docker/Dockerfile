@@ -15,6 +15,7 @@ RUN apk add --no-cache --virtual .build-deps \
     oniguruma-dev \
     postgresql-dev \
     icu-dev \
+    imagemagick-dev \
     && apk add --no-cache \
     bash \
     libzip \
@@ -23,6 +24,7 @@ RUN apk add --no-cache --virtual .build-deps \
     freetype \
     libpq \
     icu-libs \
+    imagemagick \
     # Configuration et installation des extensions PHP
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
@@ -35,10 +37,11 @@ RUN apk add --no-cache --virtual .build-deps \
     opcache \
     pcntl \
     intl \
+    exif \
     gd \
-    # Installation de Redis extension
-    && pecl install redis \
-    && docker-php-ext-enable redis \
+    # Installation de Redis et Imagick extensions
+    && pecl install redis imagick \
+    && docker-php-ext-enable redis imagick \
     # Nettoyage complet des dépendances de build et cache
     && apk del .build-deps \
     && rm -rf /tmp/* /var/cache/apk/* /usr/share/man /usr/share/doc
