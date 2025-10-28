@@ -4,7 +4,8 @@ services:
     pull_policy: always
     restart: unless-stopped
     volumes:
-      - storage-data:/var/www/storage
+      - storage-app:/var/www/storage/app
+      - storage-logs:/var/www/storage/logs
     env_file:
       - .env
     networks:
@@ -43,6 +44,7 @@ services:
 
 volumes:
   storage-data:
+  storage-logs:
 
 networks:
   hidima:
