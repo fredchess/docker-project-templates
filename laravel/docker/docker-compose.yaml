@@ -4,12 +4,12 @@ services:
     pull_policy: always
     restart: unless-stopped
     volumes:
-      - storage-data:/var/www/storage/app
-      - storage-logs:/var/www/storage/logs
+      - storage-data:/var/www/storage
     env_file:
       - .env
     networks:
       - hidima
+      - dokploy-network
     healthcheck:
       test: ["CMD-SHELL", "pidof php-fpm || exit 1"]
       interval: 10s
@@ -45,9 +45,8 @@ services:
 
 volumes:
   storage-data:
-  storage-logs:
 
 networks:
   hidima:
-    name: dokploy-network
+  dokploy-network:
     external: true
