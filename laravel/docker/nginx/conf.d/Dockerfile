@@ -3,7 +3,7 @@
 # =========================
 # Cette image copie les assets depuis l'image Laravel déjà buildée
 # pour éviter le problème de persistence des volumes Docker
-ARG GITHUB_REPOSITORY=digipasscmr/digipass-crm
+ARG GITHUB_REPOSITORY=fredchess/onenation_oneheart
 ARG IMAGE_TAG=latest
 FROM ghcr.io/${GITHUB_REPOSITORY}:${IMAGE_TAG} AS assets
 
@@ -19,6 +19,10 @@ RUN mkdir -p /var/www/public
 # Copier UNIQUEMENT le dossier public depuis l'image Laravel
 # Cela inclut les assets buildés (/var/www/public/build)
 COPY --from=assets /var/www/public /var/www/public
+
+# Créer le lien symbolique storage (équivalent de php artisan storage:link)
+# Ce lien pointe vers /var/www/storage/app/public qui sera monté via volume partagé
+RUN ln -sfn /var/www/storage/app/public /var/www/public/storage
 
 # Ajuster les permissions
 # Note: On garde les fichiers PHP car Nginx doit pouvoir les lire
