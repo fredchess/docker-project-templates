@@ -43,6 +43,22 @@ services:
       timeout: 5s
       retries: 3
 
+  gtfconnect-queue:
+    image: ghcr.io/fredchess/onenation_oneheart:latest
+    pull_policy: always
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "--verbose", "--tries=3", "--max-time=3600"]
+    volumes:
+      - storage-data:/var/www/storage
+    env_file:
+      - .env
+    depends_on:
+      - onoh-php-fpm
+      - redis
+    networks:
+      - onoh
+      - dokploy-network
+
 volumes:
   storage-data:
 
